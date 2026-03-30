@@ -1,5 +1,7 @@
 # 🚀 Rieux Data Download
 
+[![DOI](https://zenodo.org/badge/1196527929.svg)](https://doi.org/10.5281/zenodo.19339905)
+
 **Um pipeline de transferência de dados HPC-para-Local com auditoria criptográfica nativa.**
 
 Em bioinformática e ciência de dados, transferir grandes volumes de informação de um ambiente de Alta Performance (HPC) para estações de trabalho locais exige mais do que um simples comando de cópia. Exige a garantia matemática de que nenhum byte foi corrompido ou perdido durante o trânsito de rede.
