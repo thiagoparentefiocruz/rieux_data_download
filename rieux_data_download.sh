@@ -96,4 +96,4 @@ rieux_data_download() {
     cd "$ORIGINAL_DIR"
 }
 
-export -f rieux_data_download
+rieux_data_download "$@"

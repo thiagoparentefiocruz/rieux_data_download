@@ -17,33 +17,53 @@ O `rieux_data_download` é um wrapper inteligente em Bash desenhado para o clust
 
 ## ⚙️ Pré-requisitos
 
-* Acesso SSH configurado (preferencialmente com multiplexação/chaves RSA) para o servidor remoto. Ver função: rieux_ssh_multiplexing
+* Acesso SSH configurado (preferencialmente com multiplexação/chaves RSA) para o servidor remoto. Ver ferramenta complementar: `rieux_ssh_multiplexing`.
 * Funciona nativamente em terminais **macOS** (zsh/bash) e **Linux/WSL**.
 
 ## 🛠️ Instalação
 
-1. Clone o repositório para o seu cofre de scripts locais:
-   ```bash
-   git clone [https://github.com/thiagoparentefiocruz/rieux_data_download.git](https://github.com/thiagoparentefiocruz/rieux_data_download.git) ~/Documents/repositorios_github/rieux_data_download
-   ```
+Para instalar e usar a ferramenta como um comando nativo do seu sistema, basta clonar o repositório e rodar o nosso script de instalação automatizada. 
 
-2. Adicione o carregamento do script ao seu arquivo de configuração do terminal (~/.zshrc no Mac ou ~/.bashrc no Linux):
-   ```bash
-   echo "source ~/Documents/repositorios_github/rieux_data_download/rieux_data_download.sh" >> ~/.zshrc
-   source ~/.zshrc
-   ```
+Você pode baixar em qualquer diretório da sua máquina (como a pasta `Downloads`), pois o instalador cuidará de tudo. Abra seu terminal e rode os comandos abaixo:
 
-3. 📖 Como Usar
-A sintaxe segue o padrão de cópia do Unix: <Origem_Remota> <Destino_Local>.
-   ```bash
-   rieux_data_download <usuario@servidor:/caminho/remoto> </caminho/pasta_local>
-   ```
+```bash
+# 1. Clone o repositório
+git clone [https://github.com/thiagoparentefiocruz/rieux_data_download.git](https://github.com/thiagoparentefiocruz/rieux_data_download.git)
 
-4. 🏗️ Arquitetura (Under the Hood)
+# 2. Entre na pasta clonada
+cd rieux_data_download
+
+# 3. Execute o instalador
+bash install.sh
+```
+
+*(O script `install.sh` copiará o executável de forma segura para `~/.local/bin` e configurará automaticamente o seu `PATH`, caso seja necessário).*
+
+**Limpeza (Opcional):**
+Como o instalador faz uma cópia real do arquivo, logo após a instalação você pode apagar a pasta que acabou de baixar para manter seu computador organizado:
+
+```bash
+cd ..
+rm -rf rieux_data_download
+```
+
+## 📖 Como Usar
+
+A sintaxe segue o padrão de cópia do Unix: `<Origem_Remota> <Destino_Local>`. Após a instalação, a ferramenta estará disponível globalmente em qualquer terminal.
+
+```bash
+rieux_data_download <usuario@servidor:/caminho/remoto> <caminho/pasta_local>
+```
+
+**Exemplo prático:**
+```bash
+rieux_data_download tparente@rieux.fiocruz.br:/home/tparente/projetos/ngs_run1/ ~/MeusExperimentos/AmostrasNGS/
+```
+
+## 🏗️ Arquitetura (Under the Hood)
+
 Quando executado, o pipeline segue estritamente 3 fases:
 
-Remote Profiling & Hashing: Executa um sub-shell SSH no servidor alvo, identifica a natureza do dado, executa um find iterativo e gera um arquivo de manifesto .txt contendo as hashes SHA-256 baseadas na origem.
-
-Syncing: Abre um túnel Rsync otimizado. Se a conexão cair, basta rodar a exata mesma linha de comando para retomar do ponto de falha.
-
-Local Audit: Lê o manifesto baixado na máquina de destino e verifica byte a byte se os arquivos locais conferem perfeitamente com a imagem do servidor.
+1. **Remote Profiling & Hashing:** Executa um sub-shell SSH no servidor alvo, identifica a natureza do dado, executa um `find` iterativo e gera um arquivo de manifesto `.txt` contendo as hashes SHA-256 baseadas na origem.
+2. **Syncing:** Abre um túnel Rsync otimizado. Se a conexão cair, basta rodar a exata mesma linha de comando para retomar do ponto de falha.
+3. **Local Audit:** Lê o manifesto baixado na máquina de destino e verifica byte a byte se os arquivos locais conferem perfeitamente com a imagem do servidor.
