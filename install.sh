@@ -8,10 +8,18 @@ INSTALLER_NAME=$(basename "$0")
 
 echo "🔍 Procurando programas para instalar no diretório atual..."
 
-# Encontra arquivos executáveis na pasta atual (ignora pastas, arquivos ocultos e o próprio instalador)
-EXECUTABLES=$(find . -maxdepth 1 -type f -executable ! -name "$INSTALLER_NAME" ! -name ".*")
+# Cria uma lista de executáveis de forma 100% compatível com macOS e Linux
+EXECUTABLES=""
+for file in ./*; do
+    # Verifica se é um arquivo comum (-f), se tem permissão de execução (-x) 
+    # e se o nome é diferente do instalador
+    if [ -f "$file" ] && [ -x "$file" ] && [ "$(basename "$file")" != "$INSTALLER_NAME" ]; then
+        EXECUTABLES="$EXECUTABLES $file"
+    fi
+done
 
-if [ -z "$EXECUTABLES" ]; then
+# Verifica se encontrou alguma coisa
+if [ -z "$EXECUTABLES" ] || [ "$EXECUTABLES" == " " ]; then
     echo "⚠️  Nenhum arquivo executável encontrado."
     echo "Dica: Dê permissão de execução aos seus scripts (ex: chmod +x script.sh) antes de rodar o install.sh."
     exit 1
