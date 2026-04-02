@@ -28,7 +28,7 @@ You can download it anywhere on your machine (like the `Downloads` folder), as t
 
 ```bash
 # 1. Clone the repository
-git clone [https://github.com/thiagoparentefiocruz/hpc_data_download.git](https://github.com/thiagoparentefiocruz/hpc_data_download.git)
+git clone https://github.com/thiagoparentefiocruz/hpc_data_download.git
 
 # 2. Enter the cloned directory
 cd hpc_data_download
