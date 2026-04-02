@@ -1,69 +1,69 @@
-# 🚀 Rieux Data Download
+# 🚀 HPC Data Download
 
 [![DOI](https://zenodo.org/badge/1196527929.svg)](https://doi.org/10.5281/zenodo.19339905)
 
-**Um pipeline de transferência de dados HPC-para-Local com auditoria criptográfica nativa.**
+**An HPC-to-Local data transfer pipeline with native cryptographic auditing.**
 
-Em bioinformática e ciência de dados, transferir grandes volumes de informação de um ambiente de Alta Performance (HPC) para estações de trabalho locais exige mais do que um simples comando de cópia. Exige a garantia matemática de que nenhum byte foi corrompido ou perdido durante o trânsito de rede.
+In bioinformatics and data science, transferring large volumes of data from a High-Performance Computing (HPC) environment to local workstations requires more than a simple copy command. It demands mathematical assurance that not a single byte was corrupted or lost during network transit.
 
-O `rieux_data_download` é um wrapper inteligente em Bash desenhado para o cluster Rieux (Fiocruz), mas escalável para qualquer servidor Linux. Ele orquestra o cálculo de hashes remotamente, a transferência resiliente e a validação local em um único comando.
+`hpc_data_download` is a smart Bash wrapper designed to scale across any Linux server. It orchestrates remote hash calculation, resilient transfer, and local validation in a single command.
 
-## ✨ Principais Funcionalidades
+## ✨ Key Features
 
-* 🧠 **Smart Target Resolution:** O script detecta automaticamente se o alvo remoto é um arquivo isolado ou um diretório inteiro, ajustando a estratégia de hash e cópia dinamicamente.
-* 🔐 **Auditoria Criptográfica (Invertida):** A fonte da verdade é o servidor. O script obriga o HPC a calcular as hashes SHA-256 dos arquivos *antes* da transferência, e força a máquina local a auditar esses recibos logo após o download.
-* 🛡️ **Transferência Resiliente:** Utiliza `rsync` para permitir a retomada de downloads interrompidos sem perda de progresso.
-* 🍎 **OS-Aware:** Detecta automaticamente se a máquina local roda macOS ou Linux, ajustando os binários criptográficos (`shasum` vs `sha256sum`) e injetando proteções de energia (como o `caffeinate` no Mac para evitar suspensão durante o download).
+* 🧠 **Smart Target Resolution:** Automatically detects whether the remote target is an isolated file or an entire directory, dynamically adjusting the hashing and copying strategy.
+* 🔐 **Cryptographic Auditing (Reverse):** The source of truth is the server. The script forces the HPC to calculate SHA-256 hashes of the files *before* transfer, and forces the local machine to audit these receipts immediately after the download.
+* 🛡️ **Resilient Transfer:** Uses `rsync` to allow resuming interrupted downloads without losing any progress.
+* 🍎 **OS-Aware:** Automatically detects if the local machine runs macOS or Linux/WSL, adjusting cryptographic binaries (`shasum` vs `sha256sum`) and injecting power-management protections (like `caffeinate` on Mac to prevent sleep during the download).
 
-## ⚙️ Pré-requisitos
+## ⚙️ Prerequisites
 
-* Acesso SSH configurado (preferencialmente com multiplexação/chaves RSA) para o servidor remoto. Ver ferramenta complementar: `rieux_ssh_multiplexing`.
-* Funciona nativamente em terminais **macOS** (zsh/bash) e **Linux/WSL**.
+* Configured SSH access (preferably with multiplexing/RSA keys) to the remote server. See our companion tool: `hpc_ssh_multiplexing`.
+* Runs natively on **macOS** (zsh/bash) and **Linux/WSL** terminals.
 
-## 🛠️ Instalação
+## 🛠️ Installation
 
-Para instalar e usar a ferramenta como um comando nativo do seu sistema, basta clonar o repositório e rodar o nosso script de instalação automatizada. 
+To install and use the tool as a native system command, simply clone the repository and run our automated installation script. 
 
-Você pode baixar em qualquer diretório da sua máquina (como a pasta `Downloads`), pois o instalador cuidará de tudo. Abra seu terminal e rode os comandos abaixo:
+You can download it anywhere on your machine (like the `Downloads` folder), as the installer will handle the rest. Open your terminal and run the commands below:
 
 ```bash
-# 1. Clone o repositório
-git clone [https://github.com/thiagoparentefiocruz/rieux_data_download.git](https://github.com/thiagoparentefiocruz/rieux_data_download.git)
+# 1. Clone the repository
+git clone [https://github.com/thiagoparentefiocruz/hpc_data_download.git](https://github.com/thiagoparentefiocruz/hpc_data_download.git)
 
-# 2. Entre na pasta clonada
-cd rieux_data_download
+# 2. Enter the cloned directory
+cd hpc_data_download
 
-# 3. Execute o instalador
+# 3. Run the installer
 bash install.sh
 ```
 
-*(O script `install.sh` copiará o executável de forma segura para `~/.local/bin` e configurará automaticamente o seu `PATH`, caso seja necessário).*
+*(The `install.sh` script will securely copy the executable to `~/.local/bin` and automatically configure your `PATH` if necessary).*
 
-**Limpeza (Opcional):**
-Como o instalador faz uma cópia real do arquivo, logo após a instalação você pode apagar a pasta que acabou de baixar para manter seu computador organizado:
+**Cleanup (Optional):**
+Since the installer makes a physical copy of the file, you can delete the downloaded folder right after installation to keep your computer organized:
 
 ```bash
 cd ..
-rm -rf rieux_data_download
+rm -rf hpc_data_download
 ```
 
-## 📖 Como Usar
+## 📖 Usage
 
-A sintaxe segue o padrão de cópia do Unix: `<Origem_Remota> <Destino_Local>`. Após a instalação, a ferramenta estará disponível globalmente em qualquer terminal.
+The syntax follows the standard Unix copy pattern: `<Remote_Source> <Local_Destination>`. After installation, the tool is globally available in any terminal.
 
 ```bash
-rieux_data_download <usuario@servidor:/caminho/remoto> <caminho/pasta_local>
+hpc_data_download <username@server:/path/to/remote_target> </path/to/local_folder>
 ```
 
-**Exemplo prático:**
+**Practical Example:**
 ```bash
-rieux_data_download tparente@rieux.fiocruz.br:/home/tparente/projetos/ngs_run1/ ~/MeusExperimentos/AmostrasNGS/
+hpc_data_download username@hpc.cluster.edu:/home/username/projects/ngs_run1/ ~/MyExperiments/NGSSamples/
 ```
 
-## 🏗️ Arquitetura (Under the Hood)
+## 🏗️ Architecture (Under the Hood)
 
-Quando executado, o pipeline segue estritamente 3 fases:
+When executed, the pipeline strictly follows 3 phases:
 
-1. **Remote Profiling & Hashing:** Executa um sub-shell SSH no servidor alvo, identifica a natureza do dado, executa um `find` iterativo e gera um arquivo de manifesto `.txt` contendo as hashes SHA-256 baseadas na origem.
-2. **Syncing:** Abre um túnel Rsync otimizado. Se a conexão cair, basta rodar a exata mesma linha de comando para retomar do ponto de falha.
-3. **Local Audit:** Lê o manifesto baixado na máquina de destino e verifica byte a byte se os arquivos locais conferem perfeitamente com a imagem do servidor.
+1. **Remote Profiling & Hashing:** Executes an SSH sub-shell on the target server, identifies the nature of the data (file or folder), runs an iterative `find`, and generates a `.txt` manifest file containing the source-based SHA-256 hashes.
+2. **Syncing:** Opens an optimized Rsync tunnel. If the connection drops, simply run the exact same command line to resume from the failure point.
+3. **Local Audit:** Reads the downloaded manifest on the destination machine and verifies byte-by-byte that the local files perfectly match the server's image.
